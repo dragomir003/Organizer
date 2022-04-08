@@ -1,7 +1,7 @@
 ﻿
 namespace Organizer
 {
-    partial class Form1
+    partial class Login
     {
         /// <summary>
         /// Required designer variable.
@@ -32,10 +32,9 @@ namespace Organizer
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.Text = "Login";
         }
 
         #endregion
     }
 }
-
