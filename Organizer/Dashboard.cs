@@ -35,7 +35,7 @@ namespace Organizer
 
             lblTitle.Text = username;
 
-            SqlDataAdapter adapter = new SqlDataAdapter("select * from GetProjects('" + username + "');", conn);
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from GetProjectsBasic('" + username + "');", conn);
 
             dashboard = new DataTable();
             adapter.Fill(dashboard);
@@ -49,11 +49,17 @@ namespace Organizer
 
         private void btnNewProject_Click(object sender, EventArgs e)
         {
+            Visible = false;
+            new Project().ShowDialog();
+            Visible = true;
         }
 
         private void lbProjects_DoubleClick(object sender, EventArgs e)
         {
-                       
+            var id = (int)(dashboard.Rows[lbProjects.SelectedIndex]["id"]);
+            Visible = false;
+            new Project(id).ShowDialog();
+            Visible = true;
         }
     }
 }
