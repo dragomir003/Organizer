@@ -21,43 +21,73 @@ namespace Organizer
         }
 
         SqlConnection conn;
+
         public Login()
         {
             InitializeComponent();
             conn = new SqlConnection(ConfigurationManager.AppSettings["dbConnString"]);
 
+            AcceptButton = btnLogin;
+        }
+
+        private string ValidateUsername()
+        {
+            var username = tbUsername.Text.Trim();
+
+            return username.Length > 32 ? null : username;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            var username = ValidateUsername();
+            if (username == null)
+            {
+                MessageBox.Show("Korisnicko ime nije dobro. Mozda je predugacko?");
+                return;
+            }
+
             conn.Open();
-            SqlCommand validate = new SqlCommand("select dbo.ValidateLogin('" + tbUsername.Text + "');", conn);
+            SqlCommand validate = new SqlCommand("select dbo.ValidateLogin('" + username + "');", conn);
             LoginResult result = (LoginResult)(int)validate.ExecuteScalar();
 
             conn.Close();
 
             if (result == LoginResult.Fail)
             {
-                MessageBox.Show("Korisnicko ime: " + tbUsername.Text + " ne postoji.\nProbajte registraciju.");
+                MessageBox.Show("Korisnicko ime: " + username + " ne postoji.\nProbajte registraciju.");
                 return;
             }
 
-            MessageBox.Show("TODO: Open next form with correct credentials");        }
+            Visible = false;
+            new Dashboard(username).ShowDialog();
+
+            Close();
+        }
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
+            var username = ValidateUsername();
+            if (username == null)
+            {
+                MessageBox.Show("Korisnicko ime nije dobro. Mozda je predugacko?");
+                return;
+            }
+
             conn.Open();
-            SqlCommand validate = new SqlCommand("declare @res int; exec @res = Register '" + tbUsername.Text + "'; select @res;", conn);
+            SqlCommand validate = new SqlCommand("declare @res int; exec @res = Register '" + username + "'; select @res;", conn);
             LoginResult result = (LoginResult)(int)validate.ExecuteScalar();
             conn.Close();
 
             if (result == LoginResult.Fail)
             {
-                MessageBox.Show("Ne mozete se registrovati na dato korisnicko ime: " + tbUsername.Text + ". Morate se ulogovati.");
+                MessageBox.Show("Ne mozete se registrovati na dato korisnicko ime: " + username + ". Morate se ulogovati.");
                 return;
             }
 
-            MessageBox.Show("TODO: Open next form with correct credentials");
+            Visible = false;
+            new Dashboard(username).ShowDialog();
+
+            Close();
         }
     }
 }
