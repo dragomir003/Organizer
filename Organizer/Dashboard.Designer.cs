@@ -75,8 +75,7 @@ namespace Organizer
             this.Controls.Add(this.lblTitle);
             this.Name = "Dashboard";
             this.Text = "Dashboard";
-            this.Load += new System.EventHandler(this.Dashboard_Load);
-            this.Enter += new System.EventHandler(this.Dashboard_Load);
+            this.Activated += new System.EventHandler(this.Dashboard_Load);
             this.ResumeLayout(false);
 
         }

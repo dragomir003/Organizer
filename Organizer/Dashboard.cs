@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace Organizer
 {
@@ -18,13 +12,9 @@ namespace Organizer
 
         DataTable dashboard;
 
-        string username;
-
-        public Dashboard(string username)
+        public Dashboard()
         {
             InitializeComponent();
-
-            this.username = username;
 
             Visible = false;
         }
@@ -33,9 +23,10 @@ namespace Organizer
         {
             conn = new SqlConnection(ConfigurationManager.AppSettings["dbConnString"]);
 
-            lblTitle.Text = username;
+            lblTitle.Text = Program.Username;
+            lbProjects.Items.Clear();
 
-            SqlDataAdapter adapter = new SqlDataAdapter("select * from GetProjectsBasic('" + username + "');", conn);
+            SqlDataAdapter adapter = new SqlDataAdapter($"select * from GetProjectsBasic('{Program.Username}');", conn);
 
             dashboard = new DataTable();
             adapter.Fill(dashboard);
@@ -44,22 +35,15 @@ namespace Organizer
             {
                 lbProjects.Items.Add(dashboard.Rows[i]["naziv"].ToString() + " ---- " + dashboard.Rows[i]["opis"].ToString());
             }
-            
+
         }
 
-        private void btnNewProject_Click(object sender, EventArgs e)
-        {
-            Visible = false;
-            new Project().ShowDialog();
-            Visible = true;
-        }
+        private void btnNewProject_Click(object sender, EventArgs e) => new Project().Show();
 
         private void lbProjects_DoubleClick(object sender, EventArgs e)
         {
-            var id = (int)(dashboard.Rows[lbProjects.SelectedIndex]["id"]);
-            Visible = false;
-            new Project(id).ShowDialog();
-            Visible = true;
+            var id = (int)dashboard.Rows[lbProjects.SelectedIndex]["id"];
+            new Project(id).Show();
         }
     }
 }

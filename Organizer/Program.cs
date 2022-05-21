@@ -8,6 +8,8 @@ namespace Organizer
 {
     static class Program
     {
+        public static string Username { get; set; }
+        public static int UserId { get; set; }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

@@ -49,8 +49,8 @@ namespace Organizer
             conn.Open();
             SqlCommand validate = new SqlCommand("select dbo.ValidateLogin('" + username + "');", conn);
             LoginResult result = (LoginResult)(int)validate.ExecuteScalar();
-
             conn.Close();
+
 
             if (result == LoginResult.Fail)
             {
@@ -58,8 +58,10 @@ namespace Organizer
                 return;
             }
 
+            SetUser(username);
+
             Visible = false;
-            new Dashboard(username).ShowDialog();
+            new Dashboard().ShowDialog();
 
             Close();
         }
@@ -84,10 +86,22 @@ namespace Organizer
                 return;
             }
 
+            SetUser(username);
             Visible = false;
-            new Dashboard(username).ShowDialog();
+            new Dashboard().ShowDialog();
 
             Close();
+        }
+
+        private void SetUser(string username)
+        {
+            conn.Open();
+            var reader = new SqlCommand($"select * from Korisnik where username = '{username}';", conn).ExecuteReader();
+            reader.Read();
+            Program.Username = reader["username"].ToString();
+            Program.UserId = (int)reader["id"];
+            reader.Close();
+            conn.Close();
         }
     }
 }

@@ -77,3 +77,19 @@ return (select Projekat.id as id, Projekat.naziv as naziv, Projekat.opis as opis
 join Projekat on Projekat.id = Clanstvo.projekat
 join Korisnik on Korisnik.id = Clanstvo.korisnik
 where Korisnik.username = @username);
+
+go
+
+create proc DodajClanstvoBasic
+@korisnik int,
+@projekat int
+as
+begin
+if not exists (select korisnik, projekat from Clanstvo where korisnik = @korisnik and projekat = @projekat)
+	insert into Clanstvo(korisnik, projekat, ovlascenja) values (@korisnik, @projekat, 1)
+end;
+
+go
+
+create function ClanoviProjekta(@projekat int) returns table as
+return select Korisnik.id as id, Korisnik.username as username from Clanstvo join Korisnik on Clanstvo.korisnik = korisnik.id where clanstvo.projekat = @projekat;
